@@ -1,0 +1,87 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #f9f9f9;
+}
+
+/* Header Styles */
+header {
+    background-color: #004080;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 24px;
+}
+
+header p {
+    margin: 5px 0 0;
+    font-size: 14px;
+}
+
+/* Main Content Styles */
+main {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+main h2 {
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+
+main p {
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: #555;
+}
+
+/* Form Styles */
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin: 10px 0 5px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+input, textarea, button {
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+/* Button Styles */
+button {
+    background-color: #004080;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #00509e;
+}
+
+/* Footer Styles */
+footer {
+    text-align: center;
+    font-size: 12px;
+    color: #555;
+    margin-top: 20px;
+}
