@@ -1,10 +1,18 @@
-// Add event listener to the form
-document.getElementById('donation-form').addEventListener('submit', handleFormSubmission);
 
-/**
- * Handles form submission: validates inputs and stores data temporarily.
- * @param {Event} event - The form submit event.
- */
+  // Pure function to validate the donation form inputs
+  function validateDonationForm({ charityName, donationAmount, donationDate }) {
+    const errors = [];
+
+    if (!charityName) errors.push('Charity name is required.');
+    if (!donationAmount || isNaN(donationAmount) || donationAmount <= 0) {
+        errors.push('Donation amount must be a positive number.');
+    }
+    if (!donationDate) errors.push('Donation date is required.');
+
+    return errors;
+}
+
+// Function to handle form submission manage it
 function handleFormSubmission(event) {
     event.preventDefault();
 
@@ -21,35 +29,78 @@ function handleFormSubmission(event) {
         return;
     }
 
-    // Store the data in a temporary object
+    // Store donation data
     const donationData = {
         charityName,
-        donationAmount,
-        donationDate,
-        donorComment
+        amount: donationAmount,
+        date: donationDate,
+        comment: donorComment,
     };
+
+    // Save to localStorage
+    const donations = JSON.parse(localStorage.getItem('donations')) || [];
+    donations.push(donationData);
+    localStorage.setItem('donations', JSON.stringify(donations));
+
+    // Reload the table
+    loadDonations();
 
     console.log('Donation submitted:', donationData);
     alert('Thank you for your donation!');
+
+    // Reset form
+    document.getElementById('donation-form').reset();
 }
 
-/**
- * Validates the donation form inputs.
- * @param {Object} data - Form data to validate.
- * @param {string} data.charityName - Name of the charity.
- * @param {number} data.donationAmount - Amount donated.
- * @param {string} data.donationDate - Date of the donation.
- * @returns {string[]} - Array of error messages, empty if valid.
- */
-function validateDonationForm({ charityName, donationAmount, donationDate }) {
-    const errors = [];
+// prepares a donation data object with the form
+function loadDonations() {
+    const donations = JSON.parse(localStorage.getItem('donations')) || [];
+    const tableBody = document.querySelector('#donationTable tbody');
+    tableBody.innerHTML = '';
 
-    if (!charityName) errors.push('Charity name is required.');
-    if (!donationAmount || donationAmount <= 0) errors.push('Donation amount must be a positive number.');
-    if (!donationDate) errors.push('Donation date is required.');
+    donations.forEach((donation, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${donation.charityName}</td>
+            <td>${donation.amount}</td>
+            <td>${donation.date}</td>
+            <td>${donation.comment || 'No comment'}</td>
+            <td><button data-index="${index}" class="delete-btn">Delete</button></td>
+        `;
+        tableBody.appendChild(row);
+    });
 
-    return errors;
+    updateSummary();
+}
+
+// Function to update the summary section
+function updateSummary() {
+    const donations = JSON.parse(localStorage.getItem('donations')) || [];
+    const totalAmount = donations.reduce((sum, donation) => sum + parseFloat(donation.amount), 0);
+    document.getElementById('summary').textContent = `Total Donations: $${totalAmount.toFixed(2)}`;
+}
+
+// Function to handle deletion of a donation record
+document.querySelector('#donationTable').addEventListener('click', (e) => {
+    if (e.target.classList.contains('delete-btn')) {
+        const index = e.target.getAttribute('data-index');
+        const donations = JSON.parse(localStorage.getItem('donations')) || [];
+        donations.splice(index, 1);
+        localStorage.setItem('donations', JSON.stringify(donations));
+        loadDonations();
+    }
+});
+
+// Attach the event listener to the form
+if (typeof document !== 'undefined') {
+    document.getElementById('donation-form').addEventListener('submit', handleFormSubmission);
+}
+
+// Initial load of donations
+if (typeof document !== 'undefined') {
+    loadDonations();
 }
 
 // Export functions for testing
 module.exports = { validateDonationForm };
+
